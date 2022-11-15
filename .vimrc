@@ -5,8 +5,8 @@ set expandtab
 set smarttab
 
 " 1 tab == 4 spaces
-set shiftwidth=2
-set tabstop=2
+set shiftwidth=4
+set tabstop=4
 
 " Enable filetype plugins
 filetype plugin on
@@ -15,7 +15,7 @@ filetype indent on
 set guioptions=Te
 set ai "Auto indent
 set si "Smart indent
-set wrap "Wrap lines
+set nowrap "Don't wrap lines 
 set cindent
 set ruler
 set lbr
@@ -24,7 +24,7 @@ set nu
 
 set smartcase
 set hlsearch
-set colorcolumn=80
+" set colorcolumn=80
 
 " Function for determining the remap setting for { Gets current file type
 function GetFileType()
@@ -85,9 +85,9 @@ set mouse=a
 
 "Mode Settings
 
-let &t_SI.="\e[5 q" "SI = INSERT mode
-let &t_SR.="\e[4 q" "SR = REPLACE mode
-let &t_EI.="\e[1 q" "EI = NORMAL mode (ELSE)
+" let &t_SI.="\e[5 q" "SI = INSERT mode
+" let &t_SR.="\e[4 q" "SR = REPLACE mode
+" let &t_EI.="\e[1 q" "EI = NORMAL mode (ELSE)
 
 "Cursor settings:
 
@@ -100,11 +100,11 @@ let &t_EI.="\e[1 q" "EI = NORMAL mode (ELSE)
 
 
 " clang-format
-map <C-K> :pyf /usr/local/Cellar/clang-format/11.0.0/share/clang/clang-format.py<cr>
-imap <C-K> <c-o>:pyf /usr/local/Cellar/clang-format/11.0.0/share/clang/clang-format.py<cr>
+" map <C-K> :pyf /usr/local/Cellar/clang-format/11.0.0/share/clang/clang-format.py<cr>
+" imap <C-K> <c-o>:pyf /usr/local/Cellar/clang-format/11.0.0/share/clang/clang-format.py<cr>
 
-function! Formatonsave()
-  let l:formatdiff = 1
-  pyf /usr/local/Cellar/clang-format/11.0.0/share/clang/clang-format.py
-endfunction
-autocmd BufWritePre *.h,*.cc,*.cpp call Formatonsave()
+" function! Formatonsave()
+"   let l:formatdiff = 1
+"   pyf /usr/local/Cellar/clang-format/11.0.0/share/clang/clang-format.py
+" endfunction
+" autocmd BufWritePre *.h,*.cc,*.cpp call Formatonsave()
