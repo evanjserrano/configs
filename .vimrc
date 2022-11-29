@@ -21,6 +21,8 @@ set ruler
 set lbr
 set ignorecase
 set nu
+set cursorline
+set so=10 "scrolloff have 10 char buffer above/below cursor
 
 set smartcase
 set hlsearch
