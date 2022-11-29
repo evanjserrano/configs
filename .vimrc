@@ -80,6 +80,7 @@ set viminfo^=%
 syntax on
 colorscheme delek
 hi Search cterm=NONE ctermfg=BLACK ctermbg=DARKCYAN
+hi CursorLine cterm=BOLD ctermfg=NONE ctermbg=NONE
 
 set mouse=a
 
