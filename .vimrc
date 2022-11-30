@@ -28,6 +28,23 @@ set smartcase
 set hlsearch
 " set colorcolumn=80
 
+" Navigate windows with single key presses
+nmap <C-j> <C-W>j
+nmap <C-k> <C-W>k
+nmap <C-l> <C-W>l
+nmap <C-h> <C-W>h
+nmap <Space> $
+
+" Faster split windows
+"nmap <C-s> <C-W>s<C-W>j
+"nmap <C-d> <C-W>v<C-W>l
+" no FZF
+nmap <C-s> <C-W>s<C-W>j:e.<CR>
+nmap <C-d> <C-W>v<C-W>l:e.<CR>
+" FZF
+"nmap <C-s> <C-W>s<C-W>j:FZF<CR>
+"nmap <C-d> <C-W>v<C-W>l:FZF<CR>
+
 " Function for determining the remap setting for { Gets current file type
 function GetFileType()
 
@@ -111,3 +128,10 @@ set mouse=a
 "   pyf /usr/local/Cellar/clang-format/11.0.0/share/clang/clang-format.py
 " endfunction
 " autocmd BufWritePre *.h,*.cc,*.cpp call Formatonsave()
+
+" Show cursorline/column only in focused window
+augroup CursorLine
+    au!
+    au BufWinEnter,BufEnter,FocusGained,VimEnter,WinEnter * setlocal cursorline
+    au BufWinLeave,BufLeave,FocusLost,VimLeave,WinLeave * setlocal nocursorline
+augroup END
