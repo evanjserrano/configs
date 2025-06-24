@@ -5,8 +5,8 @@ set expandtab
 set smarttab
 
 " 1 tab == 4 spaces
-set shiftwidth=4
-set tabstop=4
+set shiftwidth=2
+set tabstop=2
 
 " Enable filetype plugins
 filetype plugin on
@@ -15,18 +15,23 @@ filetype indent on
 set guioptions=Te
 set ai "Auto indent
 set si "Smart indent
-set nowrap "Don't wrap lines 
+set nowrap "Don't wrap lines
 set cindent
 set ruler
 set lbr
 set ignorecase
 set nu
 set cursorline
-set so=10 "scrolloff have 10 char buffer above/below cursor
+set so=5 "scrolloff have 10 char buffer above/below cursor
 
 set smartcase
 set hlsearch
-" set colorcolumn=80
+set colorcolumn=100
+
+set splitbelow
+set splitright
+
+au VimLeave * :!clear
 
 " Navigate windows with single key presses
 nmap <C-j> <C-W>j
@@ -39,11 +44,17 @@ nmap <Space> $
 "nmap <C-s> <C-W>s<C-W>j
 "nmap <C-d> <C-W>v<C-W>l
 " no FZF
-nmap <C-s> <C-W>s<C-W>j:e.<CR>
-nmap <C-d> <C-W>v<C-W>l:e.<CR>
+" nmap <C-s> <C-W>s<C-W>j:e.<CR>
+" nmap <C-d> <C-W>v<C-W>l:e.<CR>
 " FZF
-"nmap <C-s> <C-W>s<C-W>j:FZF<CR>
-"nmap <C-d> <C-W>v<C-W>l:FZF<CR>
+nmap <C-s> <C-W>s:FZF<CR>
+nmap <C-c> <C-W>v:FZF<CR>
+nmap <C-t> :tabe<CR>:FZF<CR>
+nmap <C-p> :FZF<CR>
+cabbrev bterm bo term
+cabbrev bt bo term
+cabbrev NERDTree NERDTreeToggle
+nmap <C-n> :NERDTree<CR>
 
 " Function for determining the remap setting for { Gets current file type
 function GetFileType()
@@ -74,7 +85,7 @@ set autoread
 set backspace=eol,start,indent
 
 " Show matching brackets when text indicator is over them
-set showmatch 
+set showmatch
 " How many tenths of a second to blink when matching brackets
 set mat=1
 
@@ -95,13 +106,50 @@ autocmd BufReadPost *
 set viminfo^=%
 
 syntax on
-colorscheme delek
 hi Search cterm=NONE ctermfg=BLACK ctermbg=DARKCYAN
 hi CursorLine cterm=BOLD ctermfg=NONE ctermbg=NONE
 
 set mouse=a
 
+let data_dir = has('nvim') ? stdpath('data') . '/site' : '~/.vim'
+if empty(glob(data_dir . '/autoload/plug.vim'))
+  silent execute '!curl -fLo '.data_dir.'/autoload/plug.vim --create-dirs  https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim'
+  autocmd VimEnter * PlugInstall --sync | source $MYVIMRC
+endif
 
+call plug#begin()
+  Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
+  Plug 'junegunn/fzf.vim'
+  Plug 'preservim/nerdtree'
+  Plug 'francoiscabrol/ranger.vim'
+  Plug 'rbgrouleff/bclose.vim'
+  Plug 'itchyny/lightline.vim'
+  Plug 'airblade/vim-gitgutter'
+  Plug 'wincent/ferret'
+  Plug 'google/vim-maktaba'
+  Plug 'bazelbuild/vim-bazel'
+  Plug 'tpope/vim-commentary'
+  Plug 'tpope/vim-fugitive'
+  Plug 'ericbn/vim-solarized'
+  Plug 'github/copilot.vim'
+  Plug 'joshdick/onedark.vim'
+  Plug 'sonph/onehalf', { 'rtp': 'vim' }
+call plug#end()
+
+let g:NERDTreeHijackNetrw = 0  " add this line if you use NERDTree
+let g:ranger_replace_netrw = 1 " open ranger when vim open a directory
+
+colorscheme onehalfdark
+
+"copilot keybindings
+"ALT-]
+inoremap ‘ <Plug>(copilot-next)
+"ALT-[
+inoremap “ <Plug>(copilot-previous)
+"ALT-\
+inoremap « <Plug>(copilot-suggest)
+
+nmap <M-]> <D-]>
 
 "Mode Settings
 
@@ -120,14 +168,23 @@ set mouse=a
 
 
 " clang-format
-" map <C-K> :pyf /usr/local/Cellar/clang-format/11.0.0/share/clang/clang-format.py<cr>
-" imap <C-K> <c-o>:pyf /usr/local/Cellar/clang-format/11.0.0/share/clang/clang-format.py<cr>
+if has('python')
+  map <C-Q> :pyf /usr/share/vim/addons/syntax/clang-format.py<cr>
+  imap <C-Q> :pyf /usr/share/vim/addons/syntax/clang-format.py<cr>
+elseif has('python3')
+  map <C-Q> :py3f /usr/share/vim/addons/syntax/clang-format.py<cr>
+  imap <C-Q> :py3f /usr/share/vim/addons/syntax/clang-format.py<cr>
+endif
 
-" function! Formatonsave()
-"   let l:formatdiff = 1
-"   pyf /usr/local/Cellar/clang-format/11.0.0/share/clang/clang-format.py
-" endfunction
-" autocmd BufWritePre *.h,*.cc,*.cpp call Formatonsave()
+function! Formatonsave()
+  let l:formatdiff = 1
+  if has('python')
+    :pyf /usr/share/vim/addons/syntax/clang-format.py
+  elseif has('python3')
+    :py3f /usr/share/vim/addons/syntax/clang-format.py
+  endif
+endfunction
+autocmd BufWritePre *.c,*.h,*.cc,*.hh,*.cpp,*.hpp,*.inl call Formatonsave()
 
 " Show cursorline/column only in focused window
 augroup CursorLine
@@ -135,3 +192,5 @@ augroup CursorLine
     au BufWinEnter,BufEnter,FocusGained,VimEnter,WinEnter * setlocal cursorline
     au BufWinLeave,BufLeave,FocusLost,VimLeave,WinLeave * setlocal nocursorline
 augroup END
+
+let g:fzf_layout = { 'window': { 'width': 0.8, 'height': 0.6, 'relative': v:true} }
